@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Domain.Enums
+namespace Blog.Domain.Entities
 {
-    public enum UserTypes
+    public class BaseEntity
     {
-        Guest = 0,
-        User = 1,
-        Admin= 2,
+        public int Id { get; set; }
     }
 }
