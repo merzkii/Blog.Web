@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.DTO.BlogPosts
 {
-    internal class CreateBlogPostDTO
+    public class CreateBlogPostDTO
     {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string Author { get; set; }
     }
 }
