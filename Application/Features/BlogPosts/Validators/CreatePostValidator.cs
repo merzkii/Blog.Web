@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Features.BlogPosts.Validators
 {
-    public class CreatePostValidator:AbstractValidator<CreatePost>
+    public class CreatePostValidator : AbstractValidator<CreatePost>
     {
         public CreatePostValidator()
         {
@@ -16,7 +16,5 @@ namespace Blog.Application.Features.BlogPosts.Validators
             RuleFor(x => x.Post.Content).NotEmpty().WithMessage("Content is required.");
             RuleFor(x => x.Post.Author).NotEmpty().WithMessage("Author is required.");
         }
-    }
-    {
     }
 }

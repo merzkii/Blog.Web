@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blog.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Blog.Domain.Interfaces
 {
     public interface IUserRepository
     {
-
+        Task <User> GetUserAsync(string username, string password);
     }
 }
