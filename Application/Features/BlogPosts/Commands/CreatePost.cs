@@ -11,10 +11,7 @@ namespace Blog.Application.Features.BlogPosts.Commands
 {
     public class CreatePost:IRequest<BlogPostDTO>
     {
-        public CreateBlogPostDTO Post { get; set; }
-        public CreatePost(CreateBlogPostDTO post)
-        {
-            Post = post;
-        }
+        public string Title { get; set; }   
+        public string Content { get; set; }
     }
 }

@@ -11,10 +11,7 @@ namespace Blog.Application.Features.BlogPosts.Commands
     public class UpdatePost:IRequest<BlogPostDTO>
     {
         public int PostId { get; set; } 
-        public CreateBlogPostDTO Post { get; set; }
-        public UpdatePost(CreateBlogPostDTO post)
-        {
-            Post = post;
-        }
+        public string Title { get; set; }
+        public string Content{get; set; }
     }
 }

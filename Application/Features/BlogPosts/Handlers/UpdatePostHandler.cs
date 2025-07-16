@@ -30,8 +30,8 @@ namespace Blog.Application.Features.BlogPosts.Handlers
                 throw new NotFoundException("BlogPost", request.PostId);
             if (existingPost.Author != _currentUser.Username && !_currentUser.IsInRole(UserRoles.Admin))
                 throw new ForbiddenException("Only the author or admin can update this post.");
-            existingPost.Title = request.Post.Title;
-            existingPost.Content = request.Post.Content;
+            existingPost.Title = request.Title;
+            existingPost.Content = request.Content;
             existingPost.LastModifiedDate = _dateService.UtcNow;
             var updatedPost = await _blogRepository.UpdateAsync(existingPost);
             return _mapper.Map<BlogPostDTO>(updatedPost);

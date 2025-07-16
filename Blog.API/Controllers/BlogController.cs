@@ -48,17 +48,17 @@ namespace Blog.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = post.Id }, post);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> UpdatePost(int postId, [FromBody] UpdatePost command)
+        public async Task<IActionResult> UpdatePost(int Id, [FromBody] UpdatePost command)
         {
-            if (postId != command.PostId)
+            if (Id != command.PostId)
                 return BadRequest("Post ID mismatch.");
             var updatedPost = await _mediator.Send(command);
             return Ok(updatedPost);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Delete(int id)
         {

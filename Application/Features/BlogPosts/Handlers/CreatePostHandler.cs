@@ -19,19 +19,20 @@ namespace Blog.Application.Features.BlogPosts.Handlers
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUser;
         private readonly IDateService _dateService;
-        public CreatePostHandler(IBlogRepository blogRepository, IMapper mapper,ICurrentUserService currentUser)
+        public CreatePostHandler(IBlogRepository blogRepository, IMapper mapper,ICurrentUserService currentUser, IDateService dateService)
         {
             _blogRepository = blogRepository;
             _mapper = mapper;
             _currentUser = currentUser;
+            _dateService = dateService;
         }
 
         public async Task<BlogPostDTO> Handle(CreatePost request, CancellationToken cancellationToken)
         {
             var post = new BlogPost
             {
-                Title = request.Post.Title,
-                Content = request.Post.Content,
+                Title = request.Title,
+                Content = request.Content,
                 Author = _currentUser.Username,
                 PublishedDate = _dateService.UtcNow
             };
