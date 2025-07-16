@@ -12,6 +12,10 @@ namespace Blog.Infrastucture.Data.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
+        public UserRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<User> GetUserAsync(string username, string password)
         {

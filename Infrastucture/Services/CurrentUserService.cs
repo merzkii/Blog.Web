@@ -1,4 +1,5 @@
-﻿using Blog.Domain.Enums;
+﻿using Blog.Application.Common.Interfaces;
+using Blog.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Infrastucture.Services
 {
-    public class CurrentUserService
+    public class CurrentUserService: ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 

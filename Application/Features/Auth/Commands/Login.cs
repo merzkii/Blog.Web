@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Features.Auth.Commands
 {
-    public class Login:IRequest<LoginResponseDTO>
+    public class Login : IRequest<LoginResponseDTO>
     {
-       public LoginDTO LoginDetails { get; set; }
-        public Login(LoginDTO login)
-        {
-            LoginDetails = login;
-        }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+
     }
-    
+
 }

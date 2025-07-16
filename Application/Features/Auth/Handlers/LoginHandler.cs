@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Features.Auth.Handlers
 {
-    public class LoginHandler: IRequestHandler<Login, LoginResponseDTO>
+    public class LoginHandler : IRequestHandler<Login, LoginResponseDTO>
     {
         private readonly IUserRepository _userRepository;
         public LoginHandler(IUserRepository userRepository)
@@ -20,15 +20,14 @@ namespace Blog.Application.Features.Auth.Handlers
         }
         public async Task<LoginResponseDTO> Handle(Login request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserAsync(request.LoginDetails.Username, request.LoginDetails.Password);
-            if (user == null || user.Password != request.LoginDetails.Password)
+            var user = await _userRepository.GetUserAsync(request.UserName, request.Password);
+            if (user == null || user.Password != request.Password)
                 throw new BadRequestException("Invalid username or password");
             return new LoginResponseDTO
             {
                 Username = user.UserName,
                 Role = user.Role,
             };
-
 
         }
     }

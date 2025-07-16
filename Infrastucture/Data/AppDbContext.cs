@@ -22,16 +22,7 @@ namespace Blog.Infrastucture.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Optional: Fluent configuration if needed
-            modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, UserName = "guest", Password = "guest123", Role = UserRoles.Guest },
-                new User { Id = 2, UserName = "user", Password = "user123", Role = UserRoles.User },
-                new User { Id = 3, UserName = "admin", Password = "admin123", Role = UserRoles.Admin }
-            );
-
-            modelBuilder.Entity<BlogPost>().HasData(
-                new BlogPost { Id = 1, Title = "Welcome", Content = "Seeded post", Author = "admin", PublishedDate = DateTime.UtcNow }
-            );
+           
         }
     }
 }
