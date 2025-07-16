@@ -1,4 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using Blog.Application.Common.Interfaces;
+using Blog.Application.DTO.BlogPosts;
+using Blog.Application.Features.BlogPosts.Commands;
+using Blog.Domain.Entities;
+using Blog.Domain.Interfaces;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +13,30 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Features.BlogPosts.Handlers
 {
-    internal class CreatePostHandler
+    public class CreatePostHandler : IRequestHandler<CreatePost, BlogPostDTO>
     {
+        private readonly IBlogRepository _blogRepository;
+        private readonly IMapper _mapper;
+        private readonly ICurrentUserService _currentUser;
+        private readonly IDateService _dateService;
+        public CreatePostHandler(IBlogRepository blogRepository, IMapper mapper,ICurrentUserService currentUser)
+        {
+            _blogRepository = blogRepository;
+            _mapper = mapper;
+            _currentUser = currentUser;
+        }
+
+        public async Task<BlogPostDTO> Handle(CreatePost request, CancellationToken cancellationToken)
+        {
+            var post = new BlogPost
+            {
+                Title = request.Post.Title,
+                Content = request.Post.Content,
+                Author = _currentUser.Username,
+                PublishedDate = _dateService.UtcNow
+            };
+            var createdPost = await _blogRepository.AddAsync(post);
+            return _mapper.Map<BlogPostDTO>(createdPost);
+        }
     }
 }

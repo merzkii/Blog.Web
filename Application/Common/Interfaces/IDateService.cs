@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Common.Interfaces
 {
-    internal interface IDateService
+    public interface IDateService
     {
+        DateTime UtcNow { get; }
     }
 }

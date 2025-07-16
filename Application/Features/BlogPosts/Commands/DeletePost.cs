@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Features.BlogPosts.Commands
 {
-    internal class DeletePost
+    public class DeletePost:IRequest<int>
     {
+        public int Id { get; set; }
+        public DeletePost(int id)
+        {
+            Id = id;
+        }
     }
 }

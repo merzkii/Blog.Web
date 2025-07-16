@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Infrastucture.Services
+namespace Blog.Domain.Interfaces
 {
-    internal class AuthService
+    public interface IUserRepository
     {
+
     }
 }

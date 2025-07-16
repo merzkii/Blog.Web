@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Blog.Application.Common.Interfaces;
+using Blog.Application.Exceptions;
+using Blog.Application.Features.BlogPosts.Commands;
+using Blog.Domain.Enums;
+using Blog.Domain.Interfaces;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +12,25 @@ using System.Threading.Tasks;
 
 namespace Blog.Application.Features.BlogPosts.Handlers
 {
-    internal class DeletePostHandler
+    public class DeletePostHandler: IRequestHandler<DeletePost, int>
     {
+        private readonly IBlogRepository _blogRepository;
+        private readonly ICurrentUserService _currentUser;
+        public DeletePostHandler(IBlogRepository blogRepository)
+        {
+            _blogRepository = blogRepository;
+        }
+        public async Task<int> Handle(DeletePost request, CancellationToken cancellationToken)
+        {
+            var post = await _blogRepository.GetByIdAsync(request.Id);
+            if (post == null)
+                throw new NotFoundException("BlogPost", request.Id);
+
+            if (post.Author != _currentUser.Username && !_currentUser.IsInRole(UserRoles.Admin))
+                throw new ForbiddenException("Only the author or admin can delete this post.");
+
+            await _blogRepository.DeleteAsync(request.Id);
+            return request.Id;
+        }
     }
 }
