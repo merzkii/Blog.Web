@@ -36,7 +36,7 @@ namespace Blog.API.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] string title)
         {
-            var result = await _mediator.Send(new SearchPosts (title));
+            var result = await _mediator.Send(new SearchPosts(title));
             return Ok(result);
         }
 
@@ -48,11 +48,11 @@ namespace Blog.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = post.Id }, post);
         }
 
-        [HttpPut]
+        [HttpPost("Update")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int Id, [FromBody] UpdatePost command)
         {
-            if (Id != command.PostId)
+            if (Id != command.Id)
                 return BadRequest("Post ID mismatch.");
             var updatedPost = await _mediator.Send(command);
             return Ok(updatedPost);

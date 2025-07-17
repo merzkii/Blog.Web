@@ -1,11 +1,11 @@
-﻿@model Blog.Web.Models.Blog.BlogPostViewModel
+﻿@model Blog.Web.Models.Blog.BlogPostEditModel
 @{
     ViewData["Title"] = "Edit Blog Post";
 }
 
 <h2>Edit Blog Post</h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post">
     <input type="hidden" asp-for="Id" />
     <div class="form-group mb-3">
         <label asp-for="Title"></label>
@@ -22,3 +22,6 @@
     <button type="submit" class="btn btn-primary">Update</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

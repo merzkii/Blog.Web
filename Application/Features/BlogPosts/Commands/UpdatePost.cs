@@ -10,7 +10,7 @@ namespace Blog.Application.Features.BlogPosts.Commands
 {
     public class UpdatePost:IRequest<BlogPostDTO>
     {
-        public int PostId { get; set; } 
+        public int Id { get; set; } 
         public string Title { get; set; }
         public string Content{get; set; }
     }

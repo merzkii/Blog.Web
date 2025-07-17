@@ -65,23 +65,37 @@ namespace Blog.Web.Controllers
                 return NotFound();
 
             var json = await response.Content.ReadAsStringAsync();
-            var post = JsonSerializer.Deserialize<BlogPostViewModel>(json, _jsonOptions);
-            return View("Edit",post);
+            var post = JsonSerializer.Deserialize<BlogPostEditModel>(json, _jsonOptions);
+            return View(post);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, BlogPostViewModel model)
+        public async Task<IActionResult> Edit(int id, BlogPostEditModel model)
         {
+            Console.WriteLine($"Route ID: {id}, Model ID: {model.Id}");
             if (id != model.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
+            {
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage); // or use a logger
+                }
                 return View(model);
+            }
+              
 
             var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync($"api/blog?id={id}", content);
+            var response = await _httpClient.PostAsync($"api/blog?id={id}", content);
             if (response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(Index));
+            var errorBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Error (Status: {(int)response.StatusCode}): {errorBody}");
+
+            // Optionally, add to ModelState for display in view
+            ModelState.AddModelError(string.Empty, "Failed to update blog post. See console for details.");
+
 
             return View(model);
         }

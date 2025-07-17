@@ -25,9 +25,9 @@ namespace Blog.Application.Features.BlogPosts.Handlers
 
         public async Task<BlogPostDTO> Handle(UpdatePost request, CancellationToken cancellationToken)
         {
-            var existingPost = await _blogRepository.GetByIdAsync(request.PostId);
+            var existingPost = await _blogRepository.GetByIdAsync(request.Id);
             if (existingPost == null)
-                throw new NotFoundException("BlogPost", request.PostId);
+                throw new NotFoundException("BlogPost", request.Id);
             if (existingPost.Author != _currentUser.Username && !_currentUser.IsInRole(UserRoles.Admin))
                 throw new ForbiddenException("Only the author or admin can update this post.");
             existingPost.Title = request.Title;
