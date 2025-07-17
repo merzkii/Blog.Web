@@ -12,11 +12,11 @@
 
     <a asp-action="Index" class="btn btn-secondary">Back to Posts</a>
 
-@if (User.IsInRole("Admin"))
-{
+    @if (User.IsInRole("Admin"))
+    {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
         <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
             <button type="submit" class="btn btn-danger">Delete</button>
         </form>
-}
     }
+</div>

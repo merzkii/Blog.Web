@@ -32,13 +32,14 @@ namespace Blog.API.Controllers
             var identity = new ClaimsIdentity(claims, "DefaultScheme");
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync("DefaultScheme", principal);
-
-            return Ok(new LoginResponseDTO
+            await HttpContext.SignInAsync("DefaultScheme", principal, new AuthenticationProperties
             {
-                Username = user.Username,
-                Role = user.Role
+                IsPersistent = true,
+                AllowRefresh = true
             });
+
+            return Ok(user);
+           
         }
     }
 }

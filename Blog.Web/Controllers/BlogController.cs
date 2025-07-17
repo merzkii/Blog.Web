@@ -47,6 +47,8 @@ namespace Blog.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BlogPostCreateModel model)
         {
+            if (!ModelState.IsValid)
+                return View(model);
             var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("api/blog", content);
             if (response.IsSuccessStatusCode)
@@ -64,7 +66,7 @@ namespace Blog.Web.Controllers
 
             var json = await response.Content.ReadAsStringAsync();
             var post = JsonSerializer.Deserialize<BlogPostViewModel>(json, _jsonOptions);
-            return View(post);
+            return View("Edit",post);
         }
 
         [HttpPost]
@@ -72,6 +74,9 @@ namespace Blog.Web.Controllers
         {
             if (id != model.Id)
                 return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(model);
 
             var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"api/blog?id={id}", content);

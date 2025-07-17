@@ -26,7 +26,7 @@ namespace Blog.Application.Features.Auth.Handlers
             return new LoginResponseDTO
             {
                 Username = user.UserName,
-                Role = user.Role,
+                Role = user.Role.ToString(),
             };
 
         }
