@@ -38,7 +38,8 @@ namespace Blog.Web.Controllers
             return View(post);
         }
 
-        public async Task <IActionResult> Create()
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
             return View();
         }
@@ -54,6 +55,7 @@ namespace Blog.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _httpClient.GetAsync($"api/blog/{id}");
