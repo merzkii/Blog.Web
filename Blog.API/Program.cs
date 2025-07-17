@@ -1,16 +1,16 @@
+using Blog.API.Filters;
 using Blog.Application.Common.Interfaces;
+using Blog.Application.Features.BlogPosts.Commands;
+using Blog.Application.Features.BlogPosts.Validators.Behaviour.Blog.Application.Common.Behaviors;
 using Blog.Application.Features.BlogPosts.Validators.Blog;
 using Blog.Domain.Interfaces;
 using Blog.Infrastucture.Data;
 using Blog.Infrastucture.Data.Repositories;
 using Blog.Infrastucture.Services;
+using FluentValidation; 
+using FluentValidation.AspNetCore;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using Blog.Application.Features.BlogPosts.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +29,8 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
 });
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreatePost).Assembly));
+builder.Services.AddValidatorsFromAssembly(typeof(CreatePostValidator).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -37,6 +39,16 @@ builder.Services.AddAuthentication("DefaultScheme")
     {
         options.LoginPath = "/api/auth/login";
         options.AccessDeniedPath = "/api/auth/denied";
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        };
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return Task.CompletedTask;
+        };
     });
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -55,9 +67,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

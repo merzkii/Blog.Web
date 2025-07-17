@@ -49,7 +49,7 @@ namespace Blog.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePost(int Id, [FromBody] UpdatePost command)
         {
             if (Id != command.PostId)
@@ -59,7 +59,7 @@ namespace Blog.API.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _mediator.Send(new DeletePost (id));
