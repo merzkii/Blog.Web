@@ -41,10 +41,10 @@ namespace Blog.Web.Controllers
             var loginResponse = JsonSerializer.Deserialize<LoginResponseViewModel>(json, _jsonOptions);
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, loginResponse.Username),
-                new Claim(ClaimTypes.Role, loginResponse.Role)
-            };
+                {
+                    new Claim(ClaimTypes.Name, loginResponse.Username),
+                    new Claim(ClaimTypes.Role, loginResponse.Role.ToString()) 
+                };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
