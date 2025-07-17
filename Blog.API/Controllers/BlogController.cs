@@ -50,7 +50,7 @@ namespace Blog.API.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdatePost(int Id, [FromBody] UpdatePost command)
+        public async Task<IActionResult> Update(int Id, [FromBody] UpdatePost command)
         {
             if (Id != command.PostId)
                 return BadRequest("Post ID mismatch.");
