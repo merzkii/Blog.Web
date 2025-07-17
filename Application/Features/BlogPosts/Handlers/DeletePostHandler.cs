@@ -16,9 +16,10 @@ namespace Blog.Application.Features.BlogPosts.Handlers
     {
         private readonly IBlogRepository _blogRepository;
         private readonly ICurrentUserService _currentUser;
-        public DeletePostHandler(IBlogRepository blogRepository)
+        public DeletePostHandler(IBlogRepository blogRepository, ICurrentUserService currentUser)
         {
             _blogRepository = blogRepository;
+            _currentUser = currentUser;
         }
         public async Task<int> Handle(DeletePost request, CancellationToken cancellationToken)
         {

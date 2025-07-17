@@ -104,7 +104,16 @@ namespace Blog.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _httpClient.DeleteAsync($"api/blog?id={id}");
+            var response = await _httpClient.DeleteAsync($"api/blog/{id}");
+            Console.WriteLine($"Deleting: api/blog/{id}");
+            Console.WriteLine($"Status: {(int)response.StatusCode} - {response.ReasonPhrase}");
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(Index));
+
+            var error = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Delete Error ({(int)response.StatusCode}): {error}");
+            TempData["DeleteError"] = "Failed to delete the post.";
+
             return RedirectToAction(nameof(Index));
         }
 

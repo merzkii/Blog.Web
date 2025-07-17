@@ -58,12 +58,13 @@ namespace Blog.API.Controllers
             return Ok(updatedPost);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _mediator.Send(new DeletePost (id));
-            return NoContent();
+            var command = new DeletePost(id);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
     }
 }
