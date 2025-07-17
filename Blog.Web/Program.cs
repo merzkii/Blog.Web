@@ -25,6 +25,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseHttpMethodOverride();
+
 app.UseStaticFiles();
 
 app.UseRouting();

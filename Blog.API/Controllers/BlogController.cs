@@ -48,7 +48,7 @@ namespace Blog.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = post.Id }, post);
         }
 
-        [HttpPost("Update")]
+        [HttpPut("{Id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int Id, [FromBody] UpdatePost command)
         {

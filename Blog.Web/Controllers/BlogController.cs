@@ -87,7 +87,7 @@ namespace Blog.Web.Controllers
               
 
             var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync($"api/blog?id={id}", content);
+            var response = await _httpClient.PutAsync($"api/blog/{id}", content);
             if (response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(Index));
             var errorBody = await response.Content.ReadAsStringAsync();
