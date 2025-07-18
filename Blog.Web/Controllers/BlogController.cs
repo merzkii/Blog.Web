@@ -17,14 +17,20 @@ namespace Blog.Web.Controllers
             _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchTerm)
         {
-            var response = await _httpClient.GetAsync("api/blog");
+            var url = string.IsNullOrWhiteSpace(searchTerm)
+         ? "api/blog"
+         : $"api/blog/search?title={Uri.EscapeDataString(searchTerm)}";
+
+            var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
             var json = await response.Content.ReadAsStringAsync();
             var posts = JsonSerializer.Deserialize<List<BlogPostViewModel>>(json, _jsonOptions);
+            ViewBag.CurrentFilter = searchTerm;
+
             return View(posts);
         }
 
@@ -145,7 +151,7 @@ namespace Blog.Web.Controllers
             }
             catch (Exception ex)
             {
-                // Fallback if deserialization fails
+                
                 ModelState.AddModelError(string.Empty, "Unexpected error occurred.");
                 Console.WriteLine($"Failed to parse validation error: {ex.Message}");
             }

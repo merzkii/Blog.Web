@@ -1,7 +1,5 @@
 ﻿using Blog.Application.DTO.Error;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Blog.API.Filters
 {

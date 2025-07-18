@@ -7,11 +7,9 @@ using Blog.Domain.Interfaces;
 using Blog.Infrastucture.Data;
 using Blog.Infrastucture.Data.Repositories;
 using Blog.Infrastucture.Services;
-using FluentValidation; 
-using FluentValidation.AspNetCore;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 

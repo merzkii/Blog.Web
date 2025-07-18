@@ -12,8 +12,21 @@
         <a asp-action="Create" class="btn btn-primary">Create New Post</a>
     }
 </div>
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="input-group shadow-sm">
+        <input type="text" name="searchTerm" class="form-control rounded-start-pill" placeholder="🔍 Search blog posts..."
+               value="@(ViewBag.CurrentFilter ?? "")" />
+        <button class="btn btn-outline-primary rounded-end-pill" type="submit">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
+</form>
 
 <div class="row">
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No blog posts found matching your search.</p>
+    }
     @foreach (var post in Model)
     {
         <div class="col-md-6 mb-4">
@@ -41,5 +54,6 @@
                 </div>
             </div>
         </div>
+       
     }
 </div>

@@ -43,7 +43,7 @@ namespace Blog.Infrastucture.Data.Repositories
         public async Task<IEnumerable<BlogPost>> SearchByTitleAsync(string title)
         {
             return await _context.Posts
-                .Where(p => p.Title.Contains(title))
+                .Where(p => p.Title.ToLower().Contains(title.ToLower()))
                 .ToListAsync();
         }
 

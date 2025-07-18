@@ -4,7 +4,6 @@ using Blog.Application.Features.BlogPosts.Queries.GetById;
 using Blog.Application.Features.BlogPosts.Queries.Search;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.API.Controllers
