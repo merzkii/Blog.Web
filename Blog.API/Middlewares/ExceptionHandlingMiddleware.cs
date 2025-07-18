@@ -29,22 +29,50 @@ namespace Blog.API.Filters
                 _logger.LogError(ex, ex.Message);
 
                 context.Response.ContentType = "application/json";
+
+                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+
+                if (ex is FluentValidation.ValidationException validationException)
+                {
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+                    var validationErrors = validationException.Errors
+                        .Select(error => new ValidationErrorItem
+                        {
+                            PropertyName = error.PropertyName,
+                            ErrorMessage = error.ErrorMessage
+                        })
+                        .ToList();
+
+                    var validationResponse = new ApiErrorResponseDTO(
+                        StatusCodes.Status400BadRequest,
+                        "Validation failed"
+                    )
+                    {
+                        Errors = validationErrors
+                    };
+
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(validationResponse, options));
+                    return;
+                }
+
+
                 context.Response.StatusCode = ex switch
                 {
-                    Application.Exceptions.NotFoundException => StatusCodes.Status404NotFound,
-                    ValidationException => StatusCodes.Status400BadRequest,
+                    Blog.Application.Exceptions.NotFoundException => StatusCodes.Status404NotFound,
+                    Blog.Application.Exceptions.BadRequestException => StatusCodes.Status400BadRequest, 
                     UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
                     _ => StatusCodes.Status500InternalServerError
                 };
 
-                var response = _env.IsDevelopment()
-                    ? new ApiErrorResponseDTO(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
-                    : new ApiErrorResponseDTO(context.Response.StatusCode, ex.Message);
+                var errorResponse = _env.IsDevelopment()
+     ? new ApiErrorResponseDTO(context.Response.StatusCode, ex.Message, ex.StackTrace)
+     : new ApiErrorResponseDTO(context.Response.StatusCode, ex.Message);
 
-                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse, options));
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Blog.Web.Models.Blog;
+﻿using Blog.Web.Models;
+using Blog.Web.Models.Blog;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
@@ -52,8 +53,16 @@ namespace Blog.Web.Controllers
             var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("api/blog", content);
             if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Post created successfully!";
                 return RedirectToAction(nameof(Index));
+            }
 
+            var errorBody = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                AddApiValidationErrors(errorBody);
+            else
+                ModelState.AddModelError(string.Empty, "Unexpected error occurred.");
             return View(model);
         }
 
@@ -72,50 +81,75 @@ namespace Blog.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, BlogPostEditModel model)
         {
-            Console.WriteLine($"Route ID: {id}, Model ID: {model.Id}");
+           
             if (id != model.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
             {
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage); // or use a logger
-                }
                 return View(model);
             }
-              
+
 
             var content = new StringContent(JsonSerializer.Serialize(model), Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync($"api/blog/{id}", content);
             if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Post updated successfully!";
                 return RedirectToAction(nameof(Index));
+            }
+
             var errorBody = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"API Error (Status: {(int)response.StatusCode}): {errorBody}");
-
-            // Optionally, add to ModelState for display in view
-            ModelState.AddModelError(string.Empty, "Failed to update blog post. See console for details.");
-
+            AddApiValidationErrors(errorBody);
 
             return View(model);
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _httpClient.DeleteAsync($"api/blog/{id}");
-            Console.WriteLine($"Deleting: api/blog/{id}");
-            Console.WriteLine($"Status: {(int)response.StatusCode} - {response.ReasonPhrase}");
             if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Post deleted successfully!";
                 return RedirectToAction(nameof(Index));
+            }
+            TempData["ErrorMessage"] = "Failed to delete Post.";
 
             var error = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Delete Error ({(int)response.StatusCode}): {error}");
-            TempData["DeleteError"] = "Failed to delete the post.";
-
             return RedirectToAction(nameof(Index));
         }
 
+
+
+        #region Helper
+
+        private void AddApiValidationErrors(string errorBody)
+        {
+            try
+            {
+                var errorResponse = JsonSerializer.Deserialize<ValidationErrorResponse>(errorBody, _jsonOptions);
+
+                if (errorResponse?.Errors != null && errorResponse.Errors.Any())
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "Unexpected error occurred.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Fallback if deserialization fails
+                ModelState.AddModelError(string.Empty, "Unexpected error occurred.");
+                Console.WriteLine($"Failed to parse validation error: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

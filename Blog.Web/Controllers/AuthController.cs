@@ -1,4 +1,5 @@
-﻿using Blog.Web.Models.Auth;
+﻿using Blog.Web.Models;
+using Blog.Web.Models.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -33,9 +34,21 @@ namespace Blog.Web.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                var errorBody = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    var error = JsonSerializer.Deserialize<ValidationErrorResponse>(errorBody, _jsonOptions);
+                    var errorMessage = error?.Message ?? "Invalid login attempt";
+                    ModelState.AddModelError(string.Empty, errorMessage);
+                }
+                catch
+                {
+                    ModelState.AddModelError(string.Empty, "Unexpected error occurred.");
+                }
+
                 return View(model);
             }
+        
 
             var json = await response.Content.ReadAsStringAsync();
             var loginResponse = JsonSerializer.Deserialize<LoginResponseViewModel>(json, _jsonOptions);
