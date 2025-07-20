@@ -8,8 +8,8 @@
 
 | მომხმარებელი       | პაროლი      | როლი    |
 |-------------------|-------------|---------|
-| `admin`       | `Admin123`  | Admin   |
-| `user`     | `User123`   | User    |
+| `admin`       | `admin123`  | Admin   |
+| `user`     | `user123`   | User    |
 
 > არ საჭიროებს ხელით რეგისტრაციას.
 
@@ -45,8 +45,9 @@
 - ASP.NET Core 8
 - Entity Framework Core (In-Memory Provider)
 - MediatR - CQRS და Command/Query + FluentValidation
+- Custom Middleware + Custom Exceptions
+- Clean Architecture
 - Bootstrap 5
-- Razor Pages
 - Cookie Authentication (MVC & API ფენაში) - ავტორიზაციისთვის
 - Role-based Access Control – Guest, User, Admin როლებით
 
